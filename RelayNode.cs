@@ -145,9 +145,10 @@ namespace RemoteTech
             this.antennaRange = 5000;
         }
 
-
+        
         public void Reload()
         {
+
             if (this.vessel == null) return;
             this.dishData.Clear();
             this.hasAntenna = false;

@@ -124,13 +124,13 @@ namespace RemoteTech
                     m.Locked = true;
 
                 foreach (ModuleRTAnimatedAntenna m in part.Modules.OfType<ModuleRTAnimatedAntenna>())
-                        m.Locked = true;
+                    m.Locked = true;
             }
 
             if (LoopLock)
                 foreach (ModuleRTLoopAnimAntenna m in part.Modules.OfType<ModuleRTLoopAnimAntenna>())
-                    if(m != this)
-                    m.Locked = true;
+                    if (m != this)
+                        m.Locked = true;
 
             part.SendMessage("UpdateGUI");
         }
@@ -314,7 +314,7 @@ namespace RemoteTech
             if (waitForAnimEnd)
                 anim[Animation].wrapMode = WrapMode.Clamp;
             else
-            anim.Stop(Animation);
+                anim.Stop(Animation);
 
             animState = 0;
 
@@ -409,7 +409,7 @@ namespace RemoteTech
             }
         }
 
-        int explodeMe = 0;
+        bool explodeMe = false;
         public override void OnUpdate()
         {
             if (!flightStarted) return;
@@ -427,17 +427,16 @@ namespace RemoteTech
                     UpdateGUI();
                 }
 
-                if (explodeMe > 0)
+                if (explodeMe && Vector3.Distance(FlightGlobals.ActiveVessel.transform.position, part.transform.position) > 250)
                 {
-                    explodeMe--;
-                    if (explodeMe == 0)
-                        part.explode();
+                    explodeMe = false;
+                    part.explode();
                 }
 
                 if (MaxQ > 0 && animState == 1 && (vessel.srf_velocity.magnitude * vessel.srf_velocity.magnitude * vessel.atmDensity * 0.5) > MaxQ)
                 {
                     part.decouple(0f);
-                    explodeMe = 10;
+                    explodeMe = true;
                 }
             }
 

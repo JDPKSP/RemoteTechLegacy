@@ -7,11 +7,11 @@ using UnityEngine;
 namespace RemoteTech
 {
 
+
     public static class RTGlobals
     {
-
         public static GameObject RTobj;
-        public static RemoteTechController controller = new RemoteTechController();
+        public static RemoteTechController controller;
         public static RemoteCoreList coreList = new RemoteCoreList();
         public static RelayNetwork network;
 

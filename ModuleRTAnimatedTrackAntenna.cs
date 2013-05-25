@@ -38,7 +38,6 @@ namespace RemoteTech
                     XZ = (float)Math.Cos(Mathf.Deg2Rad * Vector3.Angle(tf.forward, dir)) * size.x * size.z;
 
                 return XY + YZ + XZ;
-                return (XY + XZ + XZ + (size.x * size.y + size.y * size.z + size.x * size.z) / 3) / 2;
             }
         }
 
@@ -730,7 +729,7 @@ namespace RemoteTech
                         mode = TrackingModes.RETRACTED;
                     break;
                 case TrackingModes.RESETTING:
-                    if (pivot1.RotToOrigin() && pivot2.RotToOrigin())
+                    if (pivot1.RotToOrigin() & pivot2.RotToOrigin())
                     {
                         anim[Animation].speed = -Mathf.Abs(anim[Animation].speed);
 
@@ -754,47 +753,6 @@ namespace RemoteTech
                     UpdateGUI();
                 }
 
-
-                if (GameSettings.MODIFIER_KEY.GetKey() && GameSettings.BRAKES.GetKeyDown())
-                {
-                    broken = true;
-                    mode = TrackingModes.BROKEN;
-                    List<Transform> toRemove = new List<Transform>();
-                    RTUtils.findTransformsWithCollider(part.FindModelTransform(Pivot1Name), ref toRemove);
-
-                    foreach (Transform t in toRemove)
-                    {
-                        Rigidbody rb = t.gameObject.AddComponent<Rigidbody>();
-
-                        rb.angularDrag = 0;
-                        rb.angularVelocity = part.rigidbody.angularVelocity;
-                        rb.drag = 0;
-                        rb.mass = t.collider.bounds.size.x * t.collider.bounds.size.y * t.collider.bounds.size.z * ShrapnelDensity;
-                        rb.velocity = part.rigidbody.velocity;
-                        rb.isKinematic = false;
-                        t.parent = null;
-                        rb.AddForce(UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5, 5));
-                        rb.AddTorque(UnityEngine.Random.Range(-20, 20), UnityEngine.Random.Range(-20, 20), UnityEngine.Random.Range(-20, 20));
-
-                        DragModel dm = t.gameObject.AddComponent<DragModel>();
-                        dm.enabled = true;
-                        dm.tf = t;
-                        dm.rb = rb;
-                        dm.dc = ShrapnelDragCoeff;
-                        dm.mb = vessel.mainBody;
-                    }
-
-                    if (this.MaximumDrag > 0)
-                    {
-                        part.minimum_drag = this.MinimumDrag;
-                        part.maximum_drag = this.MaximumDrag;
-                    }
-
-                    EnergyDrain = antennaRange = dishRange = 0;
-                    part.SendMessage("UpdateGUI");
-                    UpdatePA();
-                    RTGlobals.network = new RelayNetwork();
-                }
 
                 if (MaxQ > 0 && mode != TrackingModes.RETRACTED && vessel.atmDensity > 0 && (Math.Pow(RTUtils.DirectionalSpeed(Pivot2Dir.up, vessel.srf_velocity), 2) * vessel.atmDensity * 0.5) > MaxQ)
                 {

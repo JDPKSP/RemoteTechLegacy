@@ -21,6 +21,7 @@ namespace RemoteTech
             savedCopy.flightCtrlState = new FlightCtrlState();
             savedCopy.flightCtrlState.CopyFrom(state);
             savedCopy.ActTime = time;
+
             states.Enqueue(savedCopy);
 
             // this saves the current attitude control values to a sepperate controlstate, that way attitude control is allways accesible without delay

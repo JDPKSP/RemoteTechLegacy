@@ -444,7 +444,7 @@ namespace RemoteTech
 
 
         List<Transform> toRemove = new List<Transform>();
-        int explodeMe = 0;
+        bool explodeMe = false;
         public override void OnUpdate()
         {
             if (!flightStarted || broken) return;
@@ -460,11 +460,10 @@ namespace RemoteTech
                     UpdateGUI();
                 }
 
-                if (explodeMe > 0)
+                if (explodeMe && Vector3.Distance(FlightGlobals.ActiveVessel.transform.position, part.transform.position) > 250)
                 {
-                    explodeMe--;
-                    if (explodeMe == 0)
-                        part.explode();
+                    explodeMe = false;
+                    part.explode();
                 }
 
                 if (MaxQ > 0 && animState == 1 && (Math.Pow(vessel.srf_velocity.magnitude, 2) * vessel.atmDensity * 0.5) > MaxQ)
@@ -472,7 +471,7 @@ namespace RemoteTech
                     if (BreakTransformName == "")
                     {
                         part.decouple(0f);
-                        explodeMe = 10;
+                        explodeMe = true;
                     }
                     else
                     {
