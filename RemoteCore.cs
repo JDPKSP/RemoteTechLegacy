@@ -126,10 +126,6 @@ namespace RemoteTech
 
             if (localControl || (InContact && powered))
             {
-                if (GameSettings.SAS_TOGGLE.GetKeyDown() || GameSettings.SAS_HOLD.GetKeyDown() || GameSettings.SAS_HOLD.GetKeyUp())
-                    flightComputerGUI.attitudeButtons[0].on = !flightComputerGUI.attitudeButtons[0].on;
-
-
                 TriggerState state = RTUtils.triggerstate;
 
                 if (state.ActionGroup != KSPActionGroup.None)
@@ -574,8 +570,10 @@ namespace RemoteTech
                     }
             }
 
-            s.killRot = flightComputerGUI.attitudeButtons[0].state.Active;
-            vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, flightComputerGUI.attitudeButtons[0].state.Active);
+            if (flightComputerGUI.attitudeButtons[0].state.Active || vessel.ActionGroups[KSPActionGroup.SAS])
+            {
+                s.killRot = true;
+            }
 
             if (powered)
                 computer.drive(s);
