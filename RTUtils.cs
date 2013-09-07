@@ -83,8 +83,6 @@ namespace RemoteTech
         {
             if (!InputLockManager.IsLocked(ControlTypes.STAGING))
                 InputLockManager.SetControlLock(ControlTypes.STAGING, "LockStaging");
-            if (!InputLockManager.IsLocked(ControlTypes.SAS))
-                InputLockManager.SetControlLock(ControlTypes.SAS, "LockSAS");
             if (!InputLockManager.IsLocked(ControlTypes.GROUPS_ALL))
                 InputLockManager.SetControlLock(ControlTypes.GROUPS_ALL, "LockActions");
         }
@@ -93,10 +91,6 @@ namespace RemoteTech
         {
             if (InputLockManager.IsLocked(ControlTypes.STAGING))
                 InputLockManager.RemoveControlLock("LockStaging");
-
-            if (InputLockManager.IsLocked(ControlTypes.SAS))
-                InputLockManager.RemoveControlLock("LockSAS");
-
             if (InputLockManager.IsLocked(ControlTypes.GROUPS_ALL))
                 InputLockManager.RemoveControlLock("LockActions");
         }

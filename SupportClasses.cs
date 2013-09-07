@@ -43,6 +43,11 @@ namespace RemoteTech
                     }
 
                     RTGlobals.coreList.update();
+
+                    if (RTGlobals.coreList.activeVesselIsRemoteTech)
+                        RTUtils.applyLocks();
+                    else
+                        RTUtils.removeLocks();
                 }
                 else if (doOnce)
                 {
