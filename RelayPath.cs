@@ -50,5 +50,21 @@ namespace RemoteTech
             }
             return ret;
         }
+
+        // NK add last leg info
+        public float lastLeg()
+        {
+            if (nodes.Count > 1)
+                return RelayNetwork.nodeDistance(nodes[0], nodes[1]);
+            else
+                return 0f;
+        }
+        public float lastLegMax()
+        {
+            if (nodes.Count > 1)
+                return RelayNetwork.maxDistance(nodes[0], nodes[1]) * 1000f;
+            else
+                return 0f;
+        }
     }
 }
