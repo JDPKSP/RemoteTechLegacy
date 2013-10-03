@@ -449,6 +449,17 @@ namespace RemoteTech
                     torqueRAvailable += Math.Abs(((CommandPod)p).rotPower);
                     torquePYAvailable += Math.Abs(((CommandPod)p).rotPower);
                 }
+                
+                foreach (PartModule m in p.Modules)
+                {
+                    if (m is ModuleReactionWheel)
+                    {
+                        torqueRAvailable += ((((ModuleReactionWheel)m).PitchTorque + ((ModuleReactionWheel)m).YawTorque + ((ModuleReactionWheel)m).RollTorque) / 3)
+                            * (p.Rigidbody.worldCenterOfMass - CoM).magnitude;
+                        torquePYAvailable += ((((ModuleReactionWheel)m).PitchTorque + ((ModuleReactionWheel)m).YawTorque + ((ModuleReactionWheel)m).RollTorque) / 3) 
+                            * (p.Rigidbody.worldCenterOfMass - CoM).magnitude;
+                    }
+                }
             }
         }
 

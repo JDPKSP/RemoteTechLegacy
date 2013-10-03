@@ -35,6 +35,8 @@ namespace RemoteTech
                 if (hasCommand) break;
             }
 
+            float sumRange = 0f; // NK allow multiple antennae
+
             foreach (ProtoPartSnapshot p in this.vessel.protoVessel.protoPartSnapshots)
             {
                 foreach (ProtoPartModuleSnapshot s in p.modules)
@@ -50,6 +52,7 @@ namespace RemoteTech
                             this.hasAntenna = true;
                             this.antennaRange = lngth;
                         }
+                        sumRange += lngth; // NK allow multiple antennae
                     }
 
                     if (n.HasValue("dishRange"))
@@ -69,6 +72,9 @@ namespace RemoteTech
 
                 }
             }
+            // NK allow multiple antennae
+            if (this.hasAntenna && RTGlobals.useMultiple)
+                this.antennaRange = (float)Math.Round(this.antennaRange + (sumRange - this.antennaRange) * 0.25f);
         }
 
 
@@ -87,6 +93,8 @@ namespace RemoteTech
                 if (hasCommand) break;
             }
 
+            float sumRange = 0f; // NK allow multiple antennae
+
             foreach (Part p in vessel.parts)
                 foreach (PartModule m in p.Modules)
                 {
@@ -98,6 +106,7 @@ namespace RemoteTech
                             this.hasAntenna = true;
                             this.antennaRange = lngth;
                         }
+                        sumRange += lngth; // NK allow multiple antennae
                     }
 
                     if (RTUtils.containsField(m, "dishRange"))
@@ -115,6 +124,9 @@ namespace RemoteTech
                         }
                     }
                 }
+            // NK allow multiple antennae
+            if (this.hasAntenna && RTGlobals.useMultiple)
+                this.antennaRange = (float)Math.Round(this.antennaRange + (sumRange - this.antennaRange) * 0.25f);
 
         }
 

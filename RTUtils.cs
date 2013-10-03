@@ -83,8 +83,6 @@ namespace RemoteTech
         {
             if (!InputLockManager.IsLocked(ControlTypes.STAGING))
                 InputLockManager.SetControlLock(ControlTypes.STAGING, "LockStaging");
-            if (!InputLockManager.IsLocked(ControlTypes.SAS))
-                InputLockManager.SetControlLock(ControlTypes.SAS, "LockSAS");
             if (!InputLockManager.IsLocked(ControlTypes.GROUPS_ALL))
                 InputLockManager.SetControlLock(ControlTypes.GROUPS_ALL, "LockActions");
         }
@@ -93,10 +91,6 @@ namespace RemoteTech
         {
             if (InputLockManager.IsLocked(ControlTypes.STAGING))
                 InputLockManager.RemoveControlLock("LockStaging");
-
-            if (InputLockManager.IsLocked(ControlTypes.SAS))
-                InputLockManager.RemoveControlLock("LockSAS");
-
             if (InputLockManager.IsLocked(ControlTypes.GROUPS_ALL))
                 InputLockManager.RemoveControlLock("LockActions");
         }
@@ -274,6 +268,15 @@ namespace RemoteTech
 
             // Returns number of frames to rest for, or 0 for no rest
             return resting;
+        }
+
+        // NK electricity
+        public static string eCost(float eDrain)
+        {
+            if (eDrain >= 1)
+                return eDrain.ToString("0.00") + "/sec.";
+            else
+                return (eDrain * 60f).ToString("0.00") + "/min.";
         }
 
         public static string length(double m)

@@ -301,12 +301,12 @@ namespace RemoteTech
             if (EnergyDrain0 != EnergyDrain1)
             {
                 if (text.Length > 0) text += "\n";
-                text += "Energy req.: " + (EnergyDrain0 * 60).ToString("0.00") + "/min. / " + (EnergyDrain1 * 60).ToString("0.00") + "/min.";
+                text += "Energy req.: " + RTUtils.eCost(EnergyDrain0) + " / " + RTUtils.eCost(EnergyDrain1); // NK
             }
             else if (this.EnergyDrain > 0)
             {
                 if (text.Length > 0) text += "\n";
-                text += "Energy req.: " + (EnergyDrain * 60).ToString("0.00") + "/min.";
+                text += "Energy req.: " + RTUtils.eCost(EnergyDrain); // NK
             }
 
             return text;

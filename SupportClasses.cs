@@ -308,7 +308,7 @@ namespace RemoteTech
         bool expack;
         string SpeedOfLight,
             RcCrew;
-        public bool show, colfriend;
+        public bool show, colfriend, usemultiple, usenewrange; // NK added two
 
         public RemoteTechCoreSettings()
         {
@@ -330,6 +330,8 @@ namespace RemoteTech
             SpeedOfLight = RTGlobals.speedOfLight.ToString();
             RcCrew = RTGlobals.RemoteCommandCrew.ToString();
             expack = RTGlobals.extPack;
+            usemultiple = RTGlobals.useMultiple; // NK added two
+            usenewrange = RTGlobals.useNewRange;
         }
 
         public void Close()
@@ -340,6 +342,8 @@ namespace RemoteTech
             RTGlobals.RemoteCommandCrew = int.Parse(RcCrew);
             RTGlobals.extPack = expack;
             RTGlobals.ColFriend = colfriend;
+            RTGlobals.useMultiple = usemultiple; // NK added two
+            RTGlobals.useNewRange = usenewrange;
 
             if (!expack && RTGlobals.Manager != null)
             {
@@ -357,7 +361,9 @@ namespace RemoteTech
                 "\n\n//Here you can edit the speed of light used to calculate control delay in m/s (Default: 300000000):\nSpeed of Light = " + SpeedOfLight + 
                 "\n\n//Here you can edit the required crew for a command station (Minimum: 1, Default: 3)\nRemoteCommand Crew = " + RcCrew + 
                 "\n\n//Here you can toggle extended control range for unfocused vessels. If on, this could cause a bit of lag if you try to control an unfocused vessel when there are a lot of vessels in your immediate viscinity (default on)\nExtended Loading Range = " + (expack ? "on" : "off") +
-                "\n\n//Here you can toggle Coulourblind friendly mode (default off)\nColourblind friendly mode = " + (colfriend ? "on" : "off")
+                "\n\n//Here you can toggle Coulourblind friendly mode (default off)\nColourblind friendly mode = " + (colfriend ? "on" : "off") +
+                "\n\n//Here you can toggle between using only the best antena/dish, and allowing multiple antennae/dishes to add together to increase a relay node's range (note you get only about 1/4 the added range for additional parts). Default = off, like classic RemoteTech\nAllow Multiple = " + (usemultiple ? "on" : "off") +
+                "\n\n//Here you can toggle between using the classic means of determining the maximum distance allowed between two nodes, which clamps to the range of the node with the weaker antenna/dish, or the new method, which is more additive (essentially a weighted doubled geometric mean, weaker + sqrt(weaker*stronger)\nNew MaxRange = " + (usenewrange ? "on" : "off")
                 , "Settings.cfg");
         }
 
@@ -409,6 +415,19 @@ namespace RemoteTech
             GUILayout.Label("Colourblind friendly mode adds a small extra indicator to the flight computer (default off)");
 
             colfriend = GUILayout.Toggle(colfriend, "Colourblind friendly mode " + (colfriend ? "on" : "off"));
+
+            GUILayout.Space(25);
+
+            // NK add two
+            GUILayout.Label("Allow multiple antennae/dishes (default off)");
+
+            usemultiple = GUILayout.Toggle(colfriend, "Allow multiple" + (usemultiple ? "on" : "off"));
+
+            GUILayout.Space(25);
+
+            GUILayout.Label("Use new max range algorithm (default off)");
+
+            usenewrange = GUILayout.Toggle(colfriend, "New max range" + (usenewrange ? "on" : "off"));
 
             GUILayout.Space(25);
 
