@@ -270,6 +270,15 @@ namespace RemoteTech
             return resting;
         }
 
+        // NK electricity
+        public static string eCost(float eDrain)
+        {
+            if (eDrain >= 1)
+                return eDrain.ToString("0.00") + "/sec.";
+            else
+                return (eDrain * 60f).ToString("0.00") + "/min.";
+        }
+
         public static string length(double m)
         {
             if (m >= 1000000000000000000)
