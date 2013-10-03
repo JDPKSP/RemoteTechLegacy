@@ -340,11 +340,8 @@ namespace RemoteTech
             {
                 if (InContact)
                 {
-                    if (GUILayout.Button("Path length: " + RTUtils.length(path.Length) + "m, delay: " + RTUtils.time(path.ControlDelay) +
-                        (RTGlobals.AdvInfo ?
-                        "\nRelay path: " + path.ToString() :
-                        ""),
-                        GUI.skin.label, GUILayout.ExpandWidth(true)))
+                    if (GUILayout.Button("Path length: " + RTUtils.length(path.Length) + "m (" + RTUtils.length(path.lastLeg()) + "m / " + RTUtils.length(path.lastLegMax()) + "m), " + "delay: " + RTUtils.time(path.ControlDelay) +
+                        (RTGlobals.AdvInfo ? "\nRelay path: " + path.ToString() : ""), GUI.skin.label, GUILayout.ExpandWidth(true)))
                     {
                         RTGlobals.AdvInfo = !RTGlobals.AdvInfo;
                     }

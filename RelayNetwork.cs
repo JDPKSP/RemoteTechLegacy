@@ -175,49 +175,107 @@ namespace RemoteTech
             return tmp;
         }
 
+        // NK pull out distance return
+        // NK new distance calcs
+        // = weaker + sqrt(weaker * stronger), with these maximums:
+        // antenna to either: Max of 100x weaker.
+        // dish to dish: Max of 1000x weaker.
+        static float distFunc(float minRange, float maxRange, float clamp)
+        {
+            if (RTGlobals.useNewRange)
+            {
+                float temp = minRange + (float)Math.Sqrt(minRange * maxRange);
+                if (temp > clamp)
+                    return clamp;
+                return temp;
+            }
+            else
+                return minRange;
+        }
+
+        public static float nodeDistance(RelayNode na, RelayNode nb)
+        {
+            return (float)(na.Position - nb.Position).magnitude;
+        }
+
+        public static float maxDistance(RelayNode na, RelayNode nb)
+        {
+            float aRange = 0, bRange = 0, aSumRange = 0, bSumRange = 0;
+            float clamp = 1000f;
+            bool aDish = false, bDish = false;
+            
+            // get max-range dish pointed at other node
+            if (na.HasDish)
+            {
+                foreach (DishData naData in na.DishData)
+                {
+                    if (((naData.pointedAt.Equals(nb.Orbits) && !na.Orbits.Equals(nb.Orbits)) || naData.pointedAt.Equals(nb.ID)))
+                    {
+                        aDish = true;
+                        if (naData.dishRange >= aRange)
+                            aRange = naData.dishRange;
+                        aSumRange += naData.dishRange;
+                    }
+                        
+                }
+            }
+            if(RTGlobals.useMultiple)
+                aRange = (float)Math.Round(aRange + (aSumRange - aRange) * 0.25f);
+
+            if(nb.HasDish)
+            {
+                foreach (DishData nbData in nb.DishData)
+                {
+                    if (((nbData.pointedAt.Equals(na.Orbits) && !nb.Orbits.Equals(na.Orbits)) || nbData.pointedAt.Equals(na.ID)))
+                    {
+                        bDish = true;
+                        if (nbData.dishRange >= bRange)
+                            aRange = nbData.dishRange;
+                        bSumRange += nbData.dishRange;
+                    }
+                }
+            }
+            if (RTGlobals.useMultiple)
+                bRange = (float)Math.Round(bRange + (bSumRange - bRange) * 0.25f);
+
+            // if no dish, get antenna. If neither, fail.
+            if (!aDish)
+            {
+                clamp = 100f;
+                if (na.HasAntenna)
+                    aRange = na.AntennaRange;
+                else
+                    return 0f;
+            }
+            if (!bDish)
+            {
+                clamp = 100f;
+                if (nb.HasAntenna)
+                    bRange = nb.AntennaRange;
+                else
+                    return 0f;
+            }
+
+            // return distance using distance function; clamp to 1000x min range if both dishes or 100x if one or both isn't
+            if (aRange < bRange)
+            {
+                return distFunc(aRange, bRange, clamp * aRange);
+            }
+            else
+            {
+                return distFunc(bRange, aRange, clamp * bRange);
+            }
+        }
+
         bool inRange(RelayNode na, RelayNode nb)
         {
 
             if (CheatOptions.InfiniteEVAFuel)
                 return true;
 
-            float distance = (float)(na.Position - nb.Position).magnitude / 1000;
-
-            if (na.HasAntenna && nb.HasAntenna && na.AntennaRange >= distance && nb.AntennaRange >= distance) { return true; }
-            if (na.HasDish && nb.HasAntenna && ((nb.AntennaRange * 2) >= distance))
-            {
-                foreach (DishData naData in na.DishData)
-                {
-                    if (((naData.pointedAt.Equals(nb.Orbits) && !na.Orbits.Equals(nb.Orbits)) || naData.pointedAt.Equals(nb.ID)) && (naData.dishRange >= distance)) { return true; }
-                }
-            }
-
-            if (nb.HasDish && na.HasAntenna && ((na.AntennaRange * 2) >= distance))
-            {
-                foreach (DishData nbData in nb.DishData)
-                {
-                    if (((nbData.pointedAt.Equals(na.Orbits) && !nb.Orbits.Equals(na.Orbits)) || nbData.pointedAt.Equals(na.ID)) && (nbData.dishRange >= distance)) { return true; }
-                }
-            }
-
-            if (na.HasDish && nb.HasDish)
-            {
-
-                bool aDish = false;
-                bool bDish = false;
-                foreach (DishData naData in na.DishData)
-                {
-                    if (((naData.pointedAt.Equals(nb.Orbits) && !na.Orbits.Equals(nb.Orbits)) || naData.pointedAt.Equals(nb.ID)) && (naData.dishRange >= distance)) { aDish = true; break; }
-                }
-                foreach (DishData nbData in nb.DishData)
-                {
-                    if (((nbData.pointedAt.Equals(na.Orbits) && !nb.Orbits.Equals(na.Orbits)) || nbData.pointedAt.Equals(na.ID)) && (nbData.dishRange >= distance)) { bDish = true; break; }
-                }
-
-                return aDish && bDish;
-            }
-
-            return false;
+            // NK refactor distance functions
+            float distance = nodeDistance(na, nb) * 0.001f; // convert to km
+            return maxDistance(na, nb) >= distance;
 
         }
 

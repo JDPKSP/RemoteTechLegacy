@@ -55,6 +55,9 @@ namespace RemoteTech
 
         //Used in RelayNetwork
         public static int RemoteCommandCrew = 3;
+        // NK add two more: allow multiple antennae/dishes, use new max range calculation
+        public static bool useMultiple = false; // and in RelayNode
+        public static bool useNewRange = false;
 
         //Used in SatSettings
         public static Rect SettingPos = new Rect((Screen.width / 2) - 175, (Screen.height / 2) - 300, 100, 200);
@@ -126,7 +129,9 @@ namespace RemoteTech
                     RCC = "",
                     SETKEY = "",
                     EXTPACK = "",
-                    COLFRIEND = "";
+                    COLFRIEND = "",
+                    MULTANT = "", // NK
+                    NEWRANGE = ""; // NK
 
                 foreach (string s in ls)
                 {
@@ -142,6 +147,11 @@ namespace RemoteTech
                             EXTPACK = s;
                         else if (s.StartsWith("Colourblind friendly mode"))
                             COLFRIEND = s;
+                        // NK add two more
+                        else if (s.StartsWith("Allow Multiple"))
+                            MULTANT = s;
+                        else if (s.StartsWith("New MaxRange"))
+                            NEWRANGE = s;
                     }
                 }
 
@@ -206,6 +216,33 @@ namespace RemoteTech
                 {
                     if (temp[temp.Length - 1].ToLower().Equals("on")) ColFriend = true;
                     if (temp[temp.Length - 1].ToLower().Equals("off")) ColFriend = false;
+                }
+                catch (Exception)
+                {
+                    ColFriend = false;
+                }
+
+                // NK allow multiple antennae
+                temp = MULTANT.Split("=".ToCharArray());
+                tmp = temp[temp.Length - 1];
+                temp = tmp.Split(" ".ToCharArray());
+                try
+                {
+                    if (temp[temp.Length - 1].ToLower().Equals("on")) useMultiple = true;
+                    if (temp[temp.Length - 1].ToLower().Equals("off")) useMultiple = false;
+                }
+                catch (Exception)
+                {
+                    useMultiple = false;
+                }
+                // NK new max range algorithm
+                temp = NEWRANGE.Split("=".ToCharArray());
+                tmp = temp[temp.Length - 1];
+                temp = tmp.Split(" ".ToCharArray());
+                try
+                {
+                    if (temp[temp.Length - 1].ToLower().Equals("on")) useNewRange = true;
+                    if (temp[temp.Length - 1].ToLower().Equals("off")) useNewRange = false;
                 }
                 catch (Exception)
                 {

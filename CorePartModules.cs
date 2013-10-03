@@ -53,7 +53,7 @@ namespace RemoteTech
             else
                 text = "Remote Control";
 
-            text += "\nEnergy req.: " + (EnergyDrain * 60).ToString("0.00") + "/min.";
+            text += "\nEnergy req.: " + RTUtils.eCost(EnergyDrain); // NK
 
             return text;
         }
@@ -238,7 +238,7 @@ namespace RemoteTech
             if (this.EnergyDrain > 0)
             {
                 if (text.Length > 0) text += "\n";
-                text += "Energy req.: " + (EnergyDrain * 60).ToString("0.00") + "/min.";
+                text += "Energy req.: " + RTUtils.eCost(EnergyDrain); // NK
             }
 
             //if (this.EnergyDrain0 > 0)
